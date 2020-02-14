@@ -3,7 +3,7 @@ let name = "image"
 
 let params = {
     'slotSize': 10,
-    'mult': 250,
+    'mult': 60,
     'opacity': 255,
     'strokeW': 1.5,
     'curves': true,
@@ -86,10 +86,12 @@ function myDrawing() {
             let gray = (red(col) + green(col) + blue(col)) * 0.33
             if (params.curves) {
             curveVertex(i * params.slotSize,
-                j * params.slotSize + noise(gray / 255) * params.mult - params.mult / 2)
+                j * params.slotSize + 
+                map(noise(gray / 255), 0, 1, -params.mult,  params.mult ))
         } else {
             vertex(i * params.slotSize,
-                j * params.slotSize + noise(gray / 255) * params.mult - params.mult / 2)
+                j * params.slotSize + 
+                map(noise(gray / 255), 0, 1, -params.mult,  params.mult ))
         }
         pop()
     }
