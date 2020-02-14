@@ -3,6 +3,7 @@ let name = "image"
 let txt = "Bérenger: Si cela s'était passé ailleurs, dans un autre pays et qu'on eût appris cela par les journaux, on pourrait discuter paisiblement de la chose, étudier la question sur toutes ses faces, en tirer objectivement des conclusions. On organiserait des débats, on ferait venir des savants, des écrivains, des hommes de loi, des femmes savantes, des artistes. Des hommes de la rue aussi, ce serait intéressant, passionnant, instructif. Mais quand vous êtes pris vous-même dans l'événement, quand vous êtes mis tout à coup devant la réalité brutale des faits, on ne peut pas ne pas se sentir concerné directement, on est trop violemment surpris pour garder tout son sang- froid. Moi, je suis surpris, je suis surpris, je suis surpris! Je n'en reviens pas."
 
 let params = {
+    'font' : "Merriveather",
     'slotSize': 10,
     'mult': 1,
     'opacity': 255,
@@ -11,6 +12,7 @@ let params = {
 
 let menu
 let img
+let fonts = ["Merriweather", "Monoton", "Rye"]
 
 function preload() {
     img = loadImage("../assets/brecoules.jpg",
@@ -39,6 +41,10 @@ function setup() {
     textAlign(CENTER, CENTER)
 
     //settings.addRange(title, min, max, value, step, callback);
+    menu.addDropDown("font choice",fonts, function(v){
+        params.font = v.label
+    }); 
+
     menu.addRange("slot size", 5, 15, params.slotSize, 1., function (v) {
         params.slotSize = v
     })
@@ -69,6 +75,7 @@ function draw() {
 
 function myDrawing() {
     background(255)
+    textFont(params.font)
    
 
     for (let i = 0; i < img.width; i++) {
