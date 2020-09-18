@@ -2,16 +2,18 @@ let name = "image"
 
 
 let params = {
-    'slotSize': 10,
-    'mult': 60,
-    'opacity': 255,
-    'strokeW': 1.5,
-    'curves': true,
-    'curveTightness': 1
+    'slotSize': 20,
+    'iconMult': 0.95,
+    'treshold': 200
+    
 }
 
 let menu
 let img
+let faReg;
+let faBol;
+
+
 
 function preload() {
     img = loadImage("../assets/jeheno.jpg",
@@ -22,6 +24,11 @@ function preload() {
             console.log("error loading image")
         })
 
+    //img.resize(50,50)
+
+    faReg = loadFont('../assets/Font Awesome 5 Free-Regular-400.otf');
+    faBol = loadFont('../assets/Font Awesome 5 Free-Solid-900.otf');
+
 
 
 }
@@ -30,7 +37,7 @@ function setup() {
     createCanvas(1000, 1000)
     pixelDensity(1)
 
-    img.resize(100, 100)
+    img.resize(50, 50)
     console.log(img.width, img.height)
 
 
@@ -39,23 +46,20 @@ function setup() {
     //settings.addRange(title, min, max, value, step, callback);
     menu.addRange("slot size", 5, 25, params.slotSize, 1., function (v) {
         params.slotSize = v
+       // redraw()
     })
-    menu.addRange("item multiplier", 1, 500, params.mult, .1, function (v) {
-        params.mult = v
+    menu.addRange("icon size multiplier", 0.5, 1.5, params.iconMult, 1., function (v) {
+        params.iconMult = v
+       // redraw()
     })
-    menu.addRange("line alpha", 0, 255, params.opacity, 1, function (v) {
-        params.opacity = v
-    })
-    menu.addRange("stroke weight", 0, 10, params.strokeW, 0.1, function (v) {
-        params.strokeW = v
-    })
-    menu.addBoolean("curves", params.curves, function (v) {
-        params.curves = !params.curves
-    });
-    menu.addRange("curves tightness", -10, 10, params.curveTightness, 0.1, function (v) {
-        params.curveTightness = v
+    menu.addRange("white treshold", 0, 255, params.treshold, 1., function (v) {
+        params.treshold = v
+       // redraw()
     })
     menu.addButton("render to svg", render);
+
+   
+    textSize(params.slotSize)
 
     imageMode(CENTER)
     rectMode(CENTER)
@@ -72,31 +76,30 @@ function draw() {
 
 function myDrawing() {
     background(255)
-    noFill()
-    curveTightness(params.curveTightness)
-    stroke(0, params.opacity)
-    strokeWeight(params.strokeW)
-    for (let j = 0; j < img.height; j++) {
-        beginShape()
-        for (let i = 0; i < img.width; i++) {
+    fill(0)
+    //noFill()
+    textSize(params.slotSize*params.iconMult)
 
 
+
+    for (let i = 0; i < img.width; i++) {
+        for (let j = 0; j < img.height; j++) {
             push()
             let col = img.get(i, j);
             let gray = (red(col) + green(col) + blue(col)) * 0.33
-            if (params.curves) {
-                curveVertex(i * params.slotSize,
-                    j * params.slotSize +
-                    map(noise(gray / 255), 0, 1, -params.mult, params.mult))
+            textSize(params.slotSize*params.iconMult *gray/255.)
+
+            if (gray < params.treshold) {
+                textFont(faReg);
+                text('\uf118', i * params.slotSize, j * params.slotSize)
             } else {
-                vertex(i * params.slotSize,
-                    j * params.slotSize +
-                    map(noise(gray / 255), 0, 1, -params.mult, params.mult))
+                textFont(faBol);
+                text('\uf556', i * params.slotSize, j * params.slotSize)
             }
             pop()
         }
-        endShape()
     }
+    //noLoop()
 
 
 }

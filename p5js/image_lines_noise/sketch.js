@@ -2,16 +2,16 @@ let name = "image"
 
 
 let params = {
-    'slotSize': 10,
-    'mult': 60,
+    'slotSize': 20,
+    'mult': 10,
     'opacity': 255,
-    'strokeW': 1.5,
-    'curves': true,
-    'curveTightness': 1
+    'strokeW': 1.5
 }
 
 let menu
 let img
+let flowField = []
+
 
 function preload() {
     img = loadImage("../assets/jeheno.jpg",
@@ -49,16 +49,13 @@ function setup() {
     menu.addRange("stroke weight", 0, 10, params.strokeW, 0.1, function (v) {
         params.strokeW = v
     })
-    menu.addBoolean("curves", params.curves, function (v) {
-        params.curves = !params.curves
-    });
-    menu.addRange("curves tightness", -10, 10, params.curveTightness, 0.1, function (v) {
-        params.curveTightness = v
-    })
+    
     menu.addButton("render to svg", render);
 
     imageMode(CENTER)
     rectMode(CENTER)
+
+   
 
 
 }
@@ -73,29 +70,30 @@ function draw() {
 function myDrawing() {
     background(255)
     noFill()
-    curveTightness(params.curveTightness)
+   
     stroke(0, params.opacity)
     strokeWeight(params.strokeW)
     for (let j = 0; j < img.height; j++) {
-        beginShape()
+        //beginShape()
         for (let i = 0; i < img.width; i++) {
 
 
             push()
             let col = img.get(i, j);
             let gray = (red(col) + green(col) + blue(col)) * 0.33
-            if (params.curves) {
-                curveVertex(i * params.slotSize,
-                    j * params.slotSize +
-                    map(noise(gray / 255), 0, 1, -params.mult, params.mult))
-            } else {
-                vertex(i * params.slotSize,
-                    j * params.slotSize +
-                    map(noise(gray / 255), 0, 1, -params.mult, params.mult))
-            }
+
+            let angle = noise(red(col)/255., green(col)/255., blue(col)/255.)*TWO_PI
+
+            let xpos = i*params.slotSize/2 +cos(angle)*params.mult
+            let ypos = j*params.slotSize/2 +sin(angle)*params.mult
+
+            line(i*params.slotSize/2, j*params.slotSize/2,
+                xpos,ypos)
+                
+            
             pop()
         }
-        endShape()
+       // endShape()
     }
 
 

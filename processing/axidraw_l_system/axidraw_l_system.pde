@@ -91,7 +91,7 @@ void keyPressed() {
     Rule[] ruleset = new Rule[1];
     ruleset[0] = new Rule('F', "FF+[+F-F-F]-[-F+F+F]");
     lsys = new LSystem("F", ruleset);
-    turtle = new Turtle(lsys.getSentence(), random(width/2), radians(25));
+    turtle = new Turtle(lsys.getSentence(), random(width/2), radians(15));
   }
 }
 
