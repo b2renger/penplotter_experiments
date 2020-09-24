@@ -16,7 +16,11 @@ Spring[] springs = new Spring[0];
 float nodeDiam=20;
 
 int idNode=0; // reference to were we are in the tree
+float node_strength = -10;
+float node_radius = 150 ;
 
+int filling = 0; // 0-TRIANGLE 1-QUAD 2-TRIANGLES
+int form = 2; 
 
 
 void setup() {
@@ -27,16 +31,29 @@ void setup() {
 
   //center node
   Node newNode0 = new Node(0/2, 0/2, -0);
-  newNode0.setRadius(150);
-  newNode0.setStrength(50);
+  newNode0.setRadius(node_radius);
+  newNode0.setStrength(node_strength);
 
   nodes = (Node[]) append(nodes, newNode0);
   idNode+=1; 
 
-  for (int i = 0; i < 100; i++) {
+  for (int i = 0; i < 10; i++) {
     grow();
   }
-  
+
+  for (int i = 0; i < nodes.length; i++) {
+    nodes[i].myMesh.setForm(form);
+  }
+
+  for (int i = 0; i < nodes.length; i++) {
+    if (filling == 0) {
+      nodes[i].myMesh.drawMode = TRIANGLES;
+    } else if (filling == 1) {
+      nodes[i].myMesh.drawMode = QUADS;
+    } else if (filling ==2) {
+      nodes[i].myMesh.drawMode = TRIANGLE;
+    }
+  }
   cam = new PeasyCam(this, 400);
 }
 
@@ -47,20 +64,20 @@ void draw() {
   //println(frameCount);
   background(255);
 
-  
+
   if (resetting) {
     reset();
   }
   resetting = false;
-  
-   if (record) {
-    beginRaw(SVG,timestamp()+ "output.svg");
+
+  if (record) {
+    beginRaw(SVG, timestamp()+ "output.svg");
   }
 
   //translate(width*0.5, height*0.5);
   draw_nodes_springs();
-  
-   if (record) {
+
+  if (record) {
     endRaw();
     record = false;
   }
@@ -104,19 +121,19 @@ void draw_nodes_springs() {
   //noStroke();
 
 
-  disto = mouseX;
+  disto = mouseX / (width *0.1);
   //lightSpecular(lights_r, lights_g, lights_b); 
   //directionalLight(lights_r, lights_g, lights_b, 1, 1, -1); 
   //specular(lights_r, lights_g, lights_b); 
   //shininess(lights_shine); 
-  
+
   stroke(0);
 
   pushMatrix();  
   //noStroke();
   rotateX(theta);
   rotateY(phi);
-  
+
   strokeWeight(1);
   for (int i = 0; i < nodes.length; i++) {
     if (i!=0) {
@@ -146,8 +163,8 @@ void reset() {
   nodes = new Node[0];
   springs = new Spring[0];
   Node newNode0 = new Node(0/2, 0/2, -0);
-  newNode0.setRadius(150);
-  newNode0.setStrength(50);
+  newNode0.setRadius(node_radius);
+  newNode0.setStrength(node_strength);
   nodes = (Node[]) append(nodes, newNode0);
 }
 
@@ -160,19 +177,19 @@ void grow() {
   if (nodes.length<=4) {
     Node newNode = new Node(random(-width/2, width/2), random(-height/2, height/2), random(-500, 500));
     newNode.setRadius(random(50, 150));
-    newNode.setStrength(-5);
+    newNode.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode);
     idNode+=1; // incr node id
 
     Node newNode2 = new Node(random(-width/2, width/2), random(-height/2, height/2), random(-500, 500));
     newNode2.setRadius(random(50, 150));
-    newNode2.setStrength(-5);
+    newNode2.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode2);
     idNode+=1;// incr node id
 
     Node newNode3 = new Node(random(-width/2, width/2), random(-height/2, height/2), random(-500, 500));
     newNode3.setRadius(random(50, 150));
-    newNode3.setStrength(-5);
+    newNode3.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode3);
     idNode+=1;// incr node id
 
@@ -196,19 +213,19 @@ void grow() {
 
     Node newNode = new Node(nodes[nodeID].x, nodes[nodeID].y, nodes[nodeID].z);
     newNode.setRadius(random(50, 150));
-    newNode.setStrength(-5);
+    newNode.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode);
     idNode+=1; // incr node id
 
     Node newNode2 =new Node(nodes[nodeID].x, nodes[nodeID].y, nodes[nodeID].z);
     newNode2.setRadius(random(50, 150));
-    newNode2.setStrength(-5);
+    newNode2.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode2);
     idNode+=1;// incr node id
 
     Node newNode3 =new Node(nodes[nodeID].x, nodes[nodeID].y, nodes[nodeID].z);
     newNode3.setRadius(random(50, 150));
-    newNode3.setStrength(-5);
+    newNode3.setStrength(node_strength);
     nodes = (Node[]) append(nodes, newNode3);
     idNode+=1;// incr node id
 

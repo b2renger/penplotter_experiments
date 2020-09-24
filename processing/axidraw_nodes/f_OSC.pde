@@ -9,12 +9,12 @@ float pitch = 0;
 float distance = 100;
 float phi = 0;
 float theta =0;
-int form = 0;
+//int form = 9;
 float trace =255;
 
 float disto = 1;
 float maxdisto = 0.1;
-int vertexcount = 5;
+int vertexcount = 15;
 
 float addNode;
 float reset;
