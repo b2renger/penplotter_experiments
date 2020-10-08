@@ -1,0 +1,179 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <!-- uncomment lines below to include extra p5 libraries -->
+  <script language="javascript" type="text/javascript" src="https://unpkg.com/roughjs@4.3.1/bundled/rough.js"></script>
+
+  <!-- this line removes any default padding and style. you might only need one of these values set. -->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <svg class="svg" width="800" height="800"></svg>
+
+  <script>
+    let svg = document.querySelector('svg');
+    let w = 800
+    let h = 800
+
+    let rc = rough.svg(svg);
+
+    var circles = [];
+    var minRadius = 10;
+    var maxRadius = 100;
+    var totalCircles = 10000;
+    var createCircleAttempts = 1000;
+
+
+
+    document.createElement("BUTTON");
+
+
+    function createAndDrawCircle() {
+
+      var newCircle;
+      var circleSafeToDraw = false;
+      for (var tries = 0; tries < createCircleAttempts; tries++) {
+        newCircle = {
+          x: Math.floor(Math.random() * w),
+          y: Math.floor(Math.random() * h),
+          radius: minRadius
+        }
+
+        if (doesCircleHaveACollision(newCircle)) {
+          continue;
+        } else {
+          circleSafeToDraw = true;
+          break;
+        }
+      }
+
+      if (!circleSafeToDraw) {
+        return;
+      }
+
+      for (var radiusSize = minRadius; radiusSize < maxRadius; radiusSize++) {
+        newCircle.radius = radiusSize;
+        if (doesCircleHaveACollision(newCircle)) {
+          newCircle.radius--;
+          break;
+        }
+      }
+
+      circles.push(newCircle);
+      // https://github.com/rough-stuff/rough/wiki
+
+      if (newCircle.radius > 60) {
+
+        let node = rc.circle(newCircle.x, newCircle.y, newCircle.radius * 2, {
+          curveStepCount : 20,
+          curveFitting : 1,
+          fillStyle : "dashed",
+          dashGap : Math.random()*15, 
+          dashOffset : Math.random()*15, 
+          bowing: 0,
+          roughness: 0,
+          strokeWidth: 1,
+          //hachureGap: 5,
+          stroke: 'none',
+          fill: 'red'
+        }); // x, y, width, height
+        svg.appendChild(node);
+      } else  if (newCircle.radius < 60 && newCircle.radius > 20){
+        let node = rc.circle(newCircle.x, newCircle.y, newCircle.radius * 2, {
+          fillStyle : "cross-hatch",
+          curveStepCount : 20,
+          curveFitting : 1,
+          bowing: 0,
+          roughness: 0,
+          strokeWidth: 1,
+          hachureGap: newCircle.radius/15 + .5+ Math.random()*8,
+          hachureAngle : Math.random()*180,
+          //hachureGap: 5,
+          stroke: 'none',
+          fill: 'blue'
+        }); // x, y, width, height
+        svg.appendChild(node);
+      }
+      else {
+        let node = rc.circle(newCircle.x, newCircle.y, newCircle.radius * 2, {
+          fillStyle : "zigzag",
+          hachureGap: newCircle.radius / 15 + 1,
+          curveStepCount : 20,
+          curveFitting : 1,
+          
+          bowing: 0,
+          roughness: 0,
+          strokeWidth: 1,
+          stroke: 'none',
+          fill: 'green'
+        }); // x, y, width, height
+        svg.appendChild(node);
+      }
+      //context.beginPath();
+      //context.arc(newCircle.x, newCircle.y, newCircle.radius, 0, 2*Math.PI);
+      //context.stroke(); 
+    }
+
+    function doesCircleHaveACollision(circle) {
+      for (var i = 0; i < circles.length; i++) {
+        var otherCircle = circles[i];
+        var a = circle.radius + otherCircle.radius;
+        var x = circle.x - otherCircle.x;
+        var y = circle.y - otherCircle.y;
+
+        if (a >= Math.sqrt((x * x) + (y * y))) {
+          return true;
+        }
+      }
+
+      if (circle.x + circle.radius >= w ||
+        circle.x - circle.radius <= 0) {
+        return true;
+      }
+
+      if (circle.y + circle.radius >= h ||
+        circle.y - circle.radius <= 0) {
+        return true;
+      }
+
+      return false;
+    }
+
+
+
+
+
+    for (var i = 0; i < totalCircles; i++) {
+      createAndDrawCircle();
+    }
+
+    console.log(svg)
+
+    //saveSvg(svg, "test.svg")
+
+    // https://stackoverflow.com/a/46403589
+    function saveSvg(svgEl, name) {
+      svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      var svgData = svgEl.outerHTML;
+      var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+      var svgBlob = new Blob([preface, svgData], {
+        type: "image/svg+xml;charset=utf-8"
+      });
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  </script>
+
+
+</body>
+
+</html>
