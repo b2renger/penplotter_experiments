@@ -21,9 +21,11 @@
 
     let rc = rough.svg(svg);
 
+    let date
+
     var circles = [];
     var minRadius = 10;
-    var maxRadius = 100;
+    var maxRadius = 125;
     var totalCircles = 10000;
     var createCircleAttempts = 1000;
 
@@ -101,7 +103,7 @@
       else {
         let node = rc.circle(newCircle.x, newCircle.y, newCircle.radius * 2, {
           fillStyle : "zigzag",
-          hachureGap: newCircle.radius / 15 + 1,
+          hachureGap: newCircle.radius / 10 + 1,
           curveStepCount : 20,
           curveFitting : 1,
           
@@ -153,7 +155,7 @@
 
     console.log(svg)
 
-    //saveSvg(svg, "test.svg")
+    saveSvg(svg, "circles " + new Date +".svg")
 
     // https://stackoverflow.com/a/46403589
     function saveSvg(svgEl, name) {
