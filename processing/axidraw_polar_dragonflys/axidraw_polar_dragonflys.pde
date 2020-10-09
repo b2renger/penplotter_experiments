@@ -7,7 +7,7 @@ boolean bExportSVG = false;
 float slotSize = 300;
 float marginX;
 float marginY;
-float time = 0;
+//float time = 0;
 
 float seed = 1234;
 
@@ -34,17 +34,19 @@ void draw() {
   if (bExportSVG){
     beginRecord(SVG, "export_"+timestamp()+".svg");
   }
+  float nlines = 1000;
 
-
-  for (int t = 0; t < 5000; t++) {
+  for (int t = 0; t < nlines; t++) {
     noFill();
     stroke(0, 200);
     strokeWeight(0.1);
-    time += 0.0025;
+    //time += 0.0025;
+    
+    float time = map(t, 0, nlines, 0, TWO_PI); 
     for (float i = marginX / 2 + slotSize / 2; i < width - marginX / 2; i += slotSize) {
       for (float j = marginY / 2 + slotSize / 2; j < height - marginY / 2; j += slotSize) {
-        float angle = noise(time/2, i/10, j/10) * TWO_PI * 2;
-        float r = pow(noise(time, i/10, j/10), 3) * slotSize *.95;
+        float angle = noise(cos(time/1.5) + seed, i/10, j/10) * TWO_PI * 2;
+        float r =  pow(noise(cos(time)+seed, i/10, j/10), 3) * slotSize *.95;
         float xpos = i + cos(angle) * r;
         float ypos = j + sin(angle) * r;
         line(xpos, ypos, i, j);
@@ -69,9 +71,8 @@ void keyPressed()
 
   if (key =='r') {
     seed = random(99999);
-     randomSeed((long)seed);
-  noiseSeed((long)seed);
-    slotSize = random(50, 400);
+  
+    slotSize = random(200, 600);
     marginX = width - int((width / slotSize)) * slotSize;
     marginY = height - int((height / slotSize)) * slotSize;
     redraw();
