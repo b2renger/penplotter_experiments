@@ -1,0 +1,124 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <!-- uncomment lines below to include extra p5 libraries -->
+  <script language="javascript" type="text/javascript" src="https://unpkg.com/roughjs@4.3.1/bundled/rough.js"></script>
+  <script language="javascript" type="text/javascript" src="../libs/rhill-voronoi-core.js"></script>
+
+  <!-- this line removes any default padding and style. you might only need one of these values set. -->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <svg class="svg" width="800" height="800"></svg>
+
+  <script>
+    let svg = document.querySelector('svg');
+    let w = 800
+    let h = 800
+
+    let rc = rough.svg(svg);
+
+    let date
+
+
+    let sites = []
+    let diagram
+    let voronoi
+    let bbox
+
+    let num = 250
+
+    initVoronoi()
+    console.log(diagram)
+
+    for (let i = 0; i < diagram.cells.length; i++) {
+      let c = diagram.cells[i]
+
+      
+      let vertices =[]
+      for (let j = 0; j < c.halfedges.length; j++) {
+        let he = c.halfedges[j]
+        vertices.push([he.getEndpoint().x, he.getEndpoint().y])
+      }
+
+      
+
+      //console.log(vertices)
+
+      let cols = ['red', 'blue', 'green']
+
+      let node = rc.polygon(vertices, {
+          v : Math.random(),
+          fillStyle : "hachure",
+          hachureAngle : Math.random()*360, 
+          hachureGap : 1.5 +  Math.random()*5, 
+          bowing: 0,
+          roughness: 0,
+          strokeWidth: 1,
+          fill: cols[Math.round(Math.random()*2)],
+          disableMultiStrokeFill : true,
+
+          
+      });
+      svg.appendChild(node);
+    }
+
+
+
+    console.log(svg)
+
+   saveSvg(svg, "voronoi " + new Date + ".svg")
+
+
+
+    function initVoronoi() {
+      voronoi = new Voronoi();
+      bbox = {
+        xl: 0,
+        xr: w,
+        yt: 0,
+        yb: h
+      }; // xl is x-left, xr is x-right, yt is y-top, and yb is y-bottom
+
+      sites = []
+      for (let i = 0; i < num; i++) {
+
+        
+        
+        sites.push({
+          x: Math.random()*w,
+          y: Math.random(h)*h
+        })
+      }
+      diagram = voronoi.compute(sites, bbox);
+    }
+
+
+
+
+    // https://stackoverflow.com/a/46403589
+    function saveSvg(svgEl, name) {
+      svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      var svgData = svgEl.outerHTML;
+      var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+      var svgBlob = new Blob([preface, svgData], {
+        type: "image/svg+xml;charset=utf-8"
+      });
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  </script>
+
+
+</body>
+
+</html>
