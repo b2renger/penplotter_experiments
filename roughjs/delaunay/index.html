@@ -1,0 +1,122 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <!-- uncomment lines below to include extra p5 libraries -->
+  <script language="javascript" type="text/javascript" src="https://unpkg.com/roughjs@4.3.1/bundled/rough.js"></script>
+  <script src="https://unpkg.com/delaunator@4.0.1/delaunator.js"></script>
+
+
+  <!-- this line removes any default padding and style. you might only need one of these values set. -->
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <svg class="svg" width="800" height="800"></svg>
+
+  <script>
+    let svg = document.querySelector('svg');
+    let w = 800
+    let h = 800
+
+    let rc = rough.svg(svg);
+
+    let date
+
+
+    let num = 500
+    let points = [] // store the random points to create triangles coordinates
+    let coordinates = [] // store triangles coordinates
+
+    initPoints()
+
+    let cols = ['red', 'blue', 'green']
+
+    for (let i = 0; i < coordinates.length; i++) {
+
+      let node = rc.polygon(coordinates[i], {
+        v: Math.random(),
+        fillStyle: "hachure",
+        hachureAngle: (i / coordinates.length) * 360,
+        hachureGap: 2 + (1 - (i / coordinates.length) ) * 15,
+        bowing: 0,
+        roughness: 0,
+        strokeWidth: 1,
+        stroke : "none",
+        fill: cols[Math.round(Math.random() * 2)],
+        disableMultiStrokeFill: true,
+
+
+      });
+      svg.appendChild(node);
+    }
+
+
+
+    console.log(svg)
+
+    saveSvg(svg, "voronoi " + new Date + ".svg")
+
+    function initPoints() {
+
+      // reset array of points and coordinates
+      points = []
+      coordinates = []
+
+
+      // add a certain number of random points to the points array
+      let res = 50
+      for (let i = 0; i < res; i++) {
+        let px =w*0.5 + h*0.5 * Math.cos((i/res) * Math.PI*2)
+        let py = h*0.5 + h*0.5 * Math.sin((i/res) * Math.PI*2)
+        points.push([px, py])
+      }
+
+      for (let i = 0; i < num; i++) {
+
+        let px =w*0.5 + h*0.4 * Math.random() * Math.cos(Math.random() * Math.PI*2)
+        let py = h*0.5 + h*0.4 * Math.random() * Math.sin(Math.random() * Math.PI*2)
+        points.push([px, py])
+      }
+
+
+      // do calculate the triangles
+      const delaunay = Delaunator.from(points);
+      // get the triangles from the library and add them to our coordinates array
+      for (let i = 0; i < delaunay.triangles.length; i += 3) {
+        coordinates.push([
+          points[delaunay.triangles[i]],
+          points[delaunay.triangles[i + 1]],
+          points[delaunay.triangles[i + 2]]
+        ]);
+      }
+      //console.log(coordinates);
+    }
+
+
+
+
+    // https://stackoverflow.com/a/46403589
+    function saveSvg(svgEl, name) {
+      svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      var svgData = svgEl.outerHTML;
+      var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+      var svgBlob = new Blob([preface, svgData], {
+        type: "image/svg+xml;charset=utf-8"
+      });
+      var svgUrl = URL.createObjectURL(svgBlob);
+      var downloadLink = document.createElement("a");
+      downloadLink.href = svgUrl;
+      downloadLink.download = name;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+  </script>
+
+
+</body>
+
+</html>
