@@ -26,26 +26,26 @@
     let date
 
 
-    let num = 500
+    let num = 200
     let points = [] // store the random points to create triangles coordinates
     let coordinates = [] // store triangles coordinates
 
     initPoints()
 
-    let cols = ['red', 'blue', 'green']
+    let cols = ['red', 'blue']
 
     for (let i = 0; i < coordinates.length; i++) {
 
       let node = rc.polygon(coordinates[i], {
         v: Math.random(),
-        fillStyle: "hachure",
+        fillStyle: "zigzag",
         hachureAngle: (i / coordinates.length) * 360,
-        hachureGap: 2 + (1 - (i / coordinates.length) ) * 15,
+        hachureGap: 2 + (1 - (i / coordinates.length))*3,
         bowing: 0,
         roughness: 0,
         strokeWidth: 1,
         stroke : "none",
-        fill: cols[Math.round(Math.random() * 2)],
+        fill: cols[Math.round(Math.random() * 1)],
         disableMultiStrokeFill: true,
 
 
