@@ -3,7 +3,7 @@ import java.util.*;
 
 boolean bExportSVG = false;
 
-float slotSize = 100;
+float slotSize = 250;
 float pg;
 float marginX;
 float marginY;
@@ -11,11 +11,11 @@ float marginY;
 float offsetX = 0.5;
 
 float offsetY = 0.5;
-float step = 10;
+float step = 25;
 
 void setup() {
 
-  size(800, 800);
+  size(1000, 1000);
   pixelDensity(1);
 }
 

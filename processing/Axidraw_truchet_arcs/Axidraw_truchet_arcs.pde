@@ -1,68 +1,52 @@
-/*
-
- Processing + Axidraw — Generative hut tutorial by Julien "v3ga" Gachadoat
- January 2020
- www.generativehut.com
- —
- 
- www.instagram.com/julienv3ga
- https://twitter.com/v3ga
- https://github.com/v3ga
- 
- */
-
-// --------------------------------------------------
 import processing.svg.*;
 import java.util.*;
 
-// --------------------------------------------------
 boolean bExportSVG = false;
 
-float s = 25;
-long seed;
 
-// --------------------------------------------------
-void setup()
-{
-  size(800, 800);
-  seed = (long) random(5000);
+
+float siz = 100;
+
+float  seed ;
+void setup() {
+
+  size(1000, 1000);
+  pixelDensity(1);
+  seed = random(5000);
 }
 
-// --------------------------------------------------
-void draw()
-{
-  randomSeed(seed);
-  // White background
-  // The function is called before beginRecord 
-  background(255);
 
-  // Start recording if the flag bExportSVG is set
-  // When recording, all Processing drawing commands will be displayed on screen and saved into a file
-  // The filename is set with a timestamp 
+void draw() {
+  randomSeed((long)seed);
+  background(255);
+  strokeWeight(2);
+
   if (bExportSVG)
   {
-    beginRecord(SVG, "data/exports/svg/export_"+timestamp()+".svg");
+    beginRecord(SVG, "export_"+timestamp()+".svg");
   }
 
-  // Drawing options : no fill and stroke set to black  
-  noFill();
-  stroke(0);
-  for (int i = 0; i <= width; i += s) {
-    for (int j = 0; j <= height; j += s) {
-      // Start drawing here
-      strokeCap(ROUND);
+
+  for (float i = 0; i <= width; i += siz) {
+    for (float j = 0; j <= height; j += siz) {
       push();
-      translate(i,j);
-      float angle = TWO_PI * (int(random(1,5))) / 4;
+      translate(i, j);
+      float angle = TWO_PI * (int(random(1, 5))) / 4;
       rotate(angle);
-      arc(0, 0, s, s, 0, PI/2);
+      noFill();
+      stroke(255, 0, 0);
+      strokeWeight(4);
+      strokeCap(ROUND);
+      //arc( 0, 0, siz, siz, 0, PI/2);
+
+      arc( 0, 0, siz, siz, 0, PI);
+      //arc( 0, 0, siz, siz, PI, PI/2);
+
       pop();
     }
   }
 
-  // End drawing here
 
-  // If we were exporting, then we stop recording and set the flag to false
   if (bExportSVG)
   {
     endRecord();
@@ -70,20 +54,19 @@ void draw()
   }
 }
 
-// --------------------------------------------------
+void mouseReleased() {
+   seed = random(50000);
+
+}
+
 void keyPressed()
 {
-  if (key == 'e')  
+  if (key == 'e')
   {
     bExportSVG = true;
   }
 }
 
-
-void mouseReleased(){
-    seed = (long) random(50000);
-
-}
 // --------------------------------------------------
 // Function borrowed from generative gestaltung sketches
 // http://www.generative-gestaltung.de
